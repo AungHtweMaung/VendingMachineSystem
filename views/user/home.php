@@ -1,4 +1,6 @@
 <?php
+// views/user/home.php
+auth();
 ?>
 
 <!DOCTYPE html>
@@ -40,7 +42,10 @@
                         <a class="nav-link active" aria-current="page" href="#"><i class="bi bi-house-door"></i> Home</a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#"><i class="bi bi-grid"></i> Products</a>
+                        <a class="nav-link" href="products"><i class="bi bi-grid"></i> Products</a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="purchase/history"><i class="bi bi-grid"></i> History</a>
                     </li>
                 </ul>
                 <ul class="navbar-nav">
@@ -50,9 +55,9 @@
                         </a>
                         <ul class="dropdown-menu" aria-labelledby="navbarDropdown">
                             <li><a class="dropdown-item" href="#"><i class="bi bi-person"></i> Profile</a></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-cart"></i> My Orders</a></li>
+                            <li><a class="dropdown-item" href="/orders"><i class="bi bi-receipt"></i> Order History</a></li>
                             <li><hr class="dropdown-divider"></li>
-                            <li><a class="dropdown-item" href="#"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
+                            <li><a class="dropdown-item" href="/logout"><i class="bi bi-box-arrow-right"></i> Logout</a></li>
                         </ul>
                     </li>
                 </ul>

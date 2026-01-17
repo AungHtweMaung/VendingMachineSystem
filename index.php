@@ -1,4 +1,5 @@
 <?php
+
 session_start();
 
 require('Controllers/AuthController.php');
@@ -33,6 +34,10 @@ switch ($uri) {
         break;
     case '/logout':
         $authController->logout();
+        break;
+    case '/products':
+        $productController->userIndex();
+        break;
     case '/admin/products':
         if ($method === 'GET') {
             $productController->index();
@@ -43,8 +48,11 @@ switch ($uri) {
     case '/admin/products/create':
         $productController->create();
         break;
-    case '/admin/products/purchase':
+    case '/products/purchase':
         $productController->purchase();
+        break;
+    case '/purchase/history':
+        $productController->purchaseHistory();
         break;
    
     default:

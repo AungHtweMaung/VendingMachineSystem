@@ -46,6 +46,9 @@
                     <li class="nav-item">
                         <a class="nav-link active" aria-current="page" href="/products"><i class="bi bi-grid"></i> Products</a>
                     </li>
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="/purchase/history"><i class="bi bi-grid"></i> History</a>
+                    </li>
                 </ul>
                 <ul class="navbar-nav">
                     <li class="nav-item dropdown">
@@ -106,9 +109,27 @@
                                         <span class="h5 text-primary mb-0">$<?php echo htmlspecialchars(number_format($product['price'], 2)); ?></span>
                                         <small class="text-muted"><?php echo htmlspecialchars($product['quantity']); ?> in stock</small>
                                     </div>
-                                    <button class="btn btn-primary w-100" <?php echo $product['quantity'] > 0 ? '' : 'disabled'; ?>>
-                                        <i class="bi bi-cart-plus me-1"></i><?php echo $product['quantity'] > 0 ? 'Add to Cart' : 'Out of Stock'; ?>
-                                    </button>
+                                    <?php if ($product['quantity'] > 0): ?>
+                                        <form method="POST" action="/products/purchase">
+                                            <input type="hidden" name="product_id" value="<?php echo $product['id']; ?>">
+                                            <div class="d-flex align-items-center mb-2">
+                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="decreaseQuantity(this)">
+                                                    <i class="bi bi-dash"></i>
+                                                </button>
+                                                <input type="number" name="quantity" class="form-control form-control-sm text-center mx-2" value="1" min="1" max="<?php echo $product['quantity']; ?>" style="width: 60px;" readonly>
+                                                <button class="btn btn-outline-secondary btn-sm" type="button" onclick="increaseQuantity(this)">
+                                                    <i class="bi bi-plus"></i>
+                                                </button>
+                                            </div>
+                                            <button type="submit" class="btn btn-primary w-100">
+                                                <i class="bi bi-credit-card me-1"></i>Purchase
+                                            </button>
+                                        </form>
+                                    <?php else: ?>
+                                        <button class="btn btn-secondary w-100" disabled>
+                                            Out of Stock
+                                        </button>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -171,6 +192,24 @@
     </footer>
 
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.8/dist/js/bootstrap.bundle.min.js" integrity="sha384-FKyoEForCGlyvwx9Hj09JcYn3nv7wiPVlz7YYwJrWVcXK/BmnVDxM+D2scQbITxI" crossorigin="anonymous"></script>
+    <script>
+        function increaseQuantity(button) {
+            const input = button.previousElementSibling;
+            let value = parseInt(input.value);
+            const max = parseInt(input.max);
+            if (value < max) {
+                input.value = value + 1;
+            }
+        }
+
+        function decreaseQuantity(button) {
+            const input = button.nextElementSibling;
+            let value = parseInt(input.value);
+            if (value > 1) {
+                input.value = value - 1;
+            }
+        }
+    </script>
 </body>
 
 </html>

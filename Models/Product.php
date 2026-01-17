@@ -58,7 +58,7 @@ class Product
     public function update($id, $data)
     {
         $stmt = $this->db->prepare("UPDATE products SET name = :name, description = :description, price = :price, quantity = :quantity, image = :image WHERE id = :id");
-        return $stmt->execute([
+        return $stmt->execute([ 
             'id' => $id,
             'name' => $data['name'],
             'description' => $data['description'],

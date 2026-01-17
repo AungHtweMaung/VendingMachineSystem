@@ -2,14 +2,18 @@
 
 require_once __DIR__ . '/../Middleware/adminMiddleware.php';
 require_once __DIR__ . '/../Models/Product.php';
+require_once __DIR__ . '/../Middleware/auth.php';
+require_once __DIR__ . '/../Models/Transaction.php';
 
 class ProductController
 {
     private $productModel;
+    private $transactionModel;
 
     public function __construct()
-    {
+    {   
         $this->productModel = new Product();
+        $this->transactionModel = new Transaction();
     }
 
     public function index()
@@ -155,9 +159,10 @@ class ProductController
 
     public function userIndex()
     {
+        auth();
         // Pagination parameters
         $page = isset($_GET['page']) ? (int)$_GET['page'] : 1;
-        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 12; // More items per page for users
+        $limit = isset($_GET['limit']) ? (int)$_GET['limit'] : 5; // More items per page for users
         $page = max(1, $page);
         $limit = max(1, $limit);
 
@@ -172,8 +177,66 @@ class ProductController
 
     public function purchase()
     {
-        // Implement purchase logic
-        echo "Purchase functionality";
+        auth();
+        // var_dump($_POST);
+       if ($_SERVER['REQUEST_METHOD'] === 'POST') {
+
+            $productId = $_POST['product_id'];
+            $quantity = (int)$_POST['quantity'];
+
+            $product = $this->productModel->getById($productId);
+            if (!$product) {
+                echo "Product not found.";
+                return;
+            }
+
+            if ($quantity <= 0 || $quantity > $product['quantity']) {
+                echo "Invalid quantity.";
+                return;
+            }
+
+            
+            try {
+                // Process purchase logic here (e.g., reduce stock, record transaction, etc.)
+                $transactionData = [
+                    'user_id' => $_SESSION['user_id'],
+                    'product_id' => $productId,
+                    'price' => $product['price'],
+                    'quantity' => $quantity,
+                    'total_amount' => $product['price'] * $quantity,
+                ];
+                $this->transactionModel->create($transactionData);
+                
+                $newQuantity = $product['quantity'] - $quantity;
+                $this->productModel->update($productId, [
+                    'name' => $product['name'],
+                    'description' => $product['description'],
+                    'price' => $product['price'],
+                    'quantity' => $newQuantity,
+                    'image' => $product['image']
+                ]);
+
+               
+                echo "<script>alert('Purchase successful!'); window.location.href = '/products';</script>";
+                // echo "<script>alert('Purchase successful!'); window.location.href = '/';</script>";
+            } catch (Exception $e) {
+                echo "Error processing purchase: " . $e->getMessage();
+            }
+           
+        }
+    }
+
+
+    public function purchaseHistory()
+    {
+        auth();
+
+        $userId = $_SESSION['user_id'];
+        $transactions = $this->transactionModel->getByUserId($userId);
+        // var_dump($transactions);
+        
+
+        require __DIR__ . '/../views/user/purchase_history.php';
     }
 
 
