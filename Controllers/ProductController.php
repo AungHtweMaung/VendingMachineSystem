@@ -28,7 +28,7 @@ class ProductController
         $limit = max(1, $limit); // Ensure limit is at least 1
 
         $offset = ($page - 1) * $limit;
-        var_dump($limit, $offset);
+        // var_dump($limit, $offset);
 
         $products = $this->productModel->getAllPaginated($limit, $offset);
         $totalCount = $this->productModel->getTotalCount();
