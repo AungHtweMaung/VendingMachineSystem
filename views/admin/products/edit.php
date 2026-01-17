@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -10,6 +11,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.0/font/bootstrap-icons.css">
     <link rel="stylesheet" href="../../../dist/style.css">
 </head>
+
 <body>
     <!-- Sidebar Overlay for Mobile -->
     <div class="sidebar-overlay" id="sidebarOverlay"></div>
@@ -26,10 +28,6 @@
 
         <!-- Sidebar Links -->
         <div class="sidebar-links">
-            <a href="/admin/dashboard" class="sidebar-link">
-                <i class="bi bi-house-door"></i>
-                <span>Dashboard</span>
-            </a>
             <a href="/admin/products" class="sidebar-link active">
                 <i class="bi bi-box-seam"></i>
                 <span>Products</span>
@@ -60,7 +58,6 @@
                 <!-- Breadcrumb -->
                 <nav aria-label="breadcrumb" class="d-none d-md-flex">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="/admin/products">Products</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Edit Product</li>
                     </ol>
@@ -72,7 +69,7 @@
                     <div class="nav-item dropdown">
                         <a class="nav-link d-flex align-items-center" href="#" role="button" data-bs-toggle="dropdown">
                             <div class="rounded-circle bg-primary d-flex align-items-center justify-content-center me-2"
-                                 style="width: 35px; height: 35px;">
+                                style="width: 35px; height: 35px;">
                                 <span class="text-white">A</span>
                             </div>
                             <span class="d-none d-md-inline">Admin</span>
@@ -116,7 +113,7 @@
                             <h6 class="mb-0"><i class="bi bi-pencil me-2"></i>Product Information</h6>
                         </div>
                         <div class="card-body">
-                            <form action="/admin/products/<?php echo $product['id']; ?>" method="POST">
+                            <form action="/admin/products/<?php echo $product['id']; ?>" method="POST" enctype="multipart/form-data">
                                 <input type="hidden" name="_method" value="PUT">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
@@ -124,9 +121,10 @@
                                             <i class="bi bi-tag me-1"></i>Product Name <span class="text-danger">*</span>
                                         </label>
                                         <input type="text" class="form-control" id="name" name="name"
-                                               value="<?php echo htmlspecialchars($product['name']); ?>" required
-                                               placeholder="Enter product name">
-                                        <div class="form-text">Enter a descriptive name for the product</div>
+                                            value="<?php echo htmlspecialchars($product['name']); ?>"
+                                            placeholder="Enter product name">
+                                        <span class="text-danger"><?php echo isset($errors['name']) ? htmlspecialchars($errors['name']) : ''; ?></span>
+
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="price" class="form-label">
@@ -135,9 +133,11 @@
                                         <div class="input-group">
                                             <span class="input-group-text">$</span>
                                             <input type="number" step="0.01" min="0" class="form-control" id="price" name="price"
-                                                   value="<?php echo htmlspecialchars($product['price']); ?>" required
-                                                   placeholder="0.00">
+                                                value="<?php echo htmlspecialchars($product['price']); ?>" required
+                                                placeholder="0.00">
                                         </div>
+                                        <span class="text-danger"><?php echo isset($errors['price']) ? htmlspecialchars($errors['price']) : ''; ?></span>
+
                                         <div class="form-text">Enter the price in dollars</div>
                                     </div>
                                 </div>
@@ -147,8 +147,9 @@
                                         <i class="bi bi-file-text me-1"></i>Description
                                     </label>
                                     <textarea class="form-control" id="description" name="description" rows="4"
-                                              placeholder="Enter product description"><?php echo htmlspecialchars($product['description']); ?></textarea>
-                                    <div class="form-text">Provide a detailed description of the product</div>
+                                        placeholder="Enter product description"><?php echo htmlspecialchars($product['description']); ?></textarea>
+                                    <span class="text-danger"><?php echo isset($errors['description']) ? htmlspecialchars($errors['description']) : ''; ?></span>
+
                                 </div>
 
                                 <div class="row">
@@ -157,10 +158,30 @@
                                             <i class="bi bi-boxes me-1"></i>Quantity <span class="text-danger">*</span>
                                         </label>
                                         <input type="number" min="0" class="form-control" id="quantity" name="quantity"
-                                               value="<?php echo htmlspecialchars($product['quantity']); ?>" required
-                                               placeholder="0">
+                                            value="<?php echo htmlspecialchars($product['quantity']); ?>" required
+                                            placeholder="0">
+                                        <span class="text-danger"><?php echo isset($errors['quantity']) ? htmlspecialchars($errors['quantity']) : ''; ?></span>
+
+
                                         <div class="form-text">Enter the current stock quantity</div>
                                     </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">
+                                        <i class="bi bi-image me-1"></i>Product Image
+                                    </label>
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/jpeg, image/png, image/webp">
+                                    <span class="text-danger"><?php echo isset($errors['image']) ? htmlspecialchars($errors['image']) : ''; ?></span>
+                                    <div class="form-text">Upload a new image to replace the current one. Supported formats: JPEG, PNG, GIF, WebP. Max size: 5MB.</div>
+                                    <?php if (!empty($product['image'])): ?>
+                                        <div class="mt-2">
+                                            <label class="form-label">Current Image:</label>
+                                            <div>
+                                                <img src="/<?php echo htmlspecialchars($product['image']); ?>" alt="Current product image" class="img-thumbnail" style="max-width: 200px; max-height: 200px;">
+                                            </div>
+                                        </div>
+                                    <?php endif; ?>
                                 </div>
 
                                 <div class="d-flex gap-2 pt-3 border-top">
@@ -184,4 +205,5 @@
     <script src="../../../dist/index.js"></script>
 
 </body>
+
 </html>

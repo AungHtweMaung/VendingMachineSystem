@@ -47,7 +47,6 @@ class AuthController
                 // echo "<pre>";
                 if ($user) {
                     $emailErr = "*Email already exists!";
-                    
                 } else {
                     $stmt = $this->db->prepare("INSERT INTO users(name, email, password, role) VALUES(:name, :email, :password, :role)");
                     $result = $stmt->execute(
@@ -85,11 +84,11 @@ class AuthController
                     $_SESSION["user_id"] = $user["id"];
                     $_SESSION["username"] = $user["name"];
                     $_SESSION["role"] = $user["role"];
-                    
+
                     if ($user["role"] == 'admin') {
-                        header("Location: /admin/dashboard");
+                        header("Location: /admin/products");
                     } else {
-                        header("Location: /user/home");
+                        header("Location: /");
                     }
                 }
             }
@@ -101,8 +100,13 @@ class AuthController
 
     public function loginPage()
     {
+        if (isset($_SESSION['user_id'])) {
+            // redirect to previous page if exists
+            $redirectTo = $_SESSION['previous_url'] ?? '/';
+            header("Location: $redirectTo");
+            exit();
+        }
 
-        
         require __DIR__ . '/../views/auth/login.php';
     }
 
@@ -116,6 +120,5 @@ class AuthController
     {
         session_destroy();
         header("Location: /login");
-        exit;
     }
 }

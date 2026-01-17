@@ -19,6 +19,23 @@ class Product
         return $stmt->fetchAll(PDO::FETCH_ASSOC);
     }
 
+    public function getAllPaginated($limit, $offset)
+    {
+        $stmt = $this->db->prepare("SELECT * FROM products ORDER BY created_at DESC LIMIT :limit OFFSET :offset");
+        $stmt->bindParam(':limit', $limit, PDO::PARAM_INT);
+        $stmt->bindParam(':offset', $offset, PDO::PARAM_INT);
+        $stmt->execute();
+        return $stmt->fetchAll(PDO::FETCH_ASSOC);
+    }
+
+    public function getTotalCount()
+    {
+        $stmt = $this->db->prepare("SELECT COUNT(*) as total FROM products");
+        $stmt->execute();
+        $result = $stmt->fetch(PDO::FETCH_ASSOC);
+        return $result['total'];
+    }
+
     public function getById($id)
     {
         $stmt = $this->db->prepare("SELECT * FROM products WHERE id = :id");
@@ -28,24 +45,26 @@ class Product
 
     public function create($data)
     {
-        $stmt = $this->db->prepare("INSERT INTO products (name, description, price, quantity) VALUES (:name, :description, :price, :quantity)");
+        $stmt = $this->db->prepare("INSERT INTO products (name, description, price, quantity, image) VALUES (:name, :description, :price, :quantity, :image)");
         return $stmt->execute([
             'name' => $data['name'],
             'description' => $data['description'],
             'price' => $data['price'],
-            'quantity' => $data['quantity']
+            'quantity' => $data['quantity'],
+            'image' => $data['image'] ?? null
         ]);
     }
 
     public function update($id, $data)
     {
-        $stmt = $this->db->prepare("UPDATE products SET name = :name, description = :description, price = :price, quantity = :quantity WHERE id = :id");
+        $stmt = $this->db->prepare("UPDATE products SET name = :name, description = :description, price = :price, quantity = :quantity, image = :image WHERE id = :id");
         return $stmt->execute([
             'id' => $id,
             'name' => $data['name'],
             'description' => $data['description'],
             'price' => $data['price'],
-            'quantity' => $data['quantity']
+            'quantity' => $data['quantity'],
+            'image' => $data['image'] ?? null
         ]);
     }
 

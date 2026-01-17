@@ -1,0 +1,4 @@
+- [ ] Update Product model's update method to include image field
+- [ ] Modify ProductController's store method to handle image upload
+- [ ] Add image input field to create.php form with enctype="multipart/form-data"
+- [ ] Add image input field to edit.php form with enctype and display current image

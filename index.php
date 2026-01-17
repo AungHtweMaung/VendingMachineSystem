@@ -14,6 +14,9 @@ switch ($uri) {
     case '/':
         require __DIR__ . '/views/user/home.php';
         break;
+    // case '/user/home':
+    //     require __DIR__ . '/views/user/home.php';
+    //     break;
     case '/login':
         if ($method === 'POST') {
             $authController->login();
@@ -28,6 +31,8 @@ switch ($uri) {
             $authController->registerPage();
         }
         break;
+    case '/logout':
+        $authController->logout();
     case '/admin/products':
         if ($method === 'GET') {
             $productController->index();
@@ -41,14 +46,7 @@ switch ($uri) {
     case '/admin/products/purchase':
         $productController->purchase();
         break;
-    case '/admin/dashboard':
-        // Admin dashboard
-        // if (!isset($_SESSION['role']) || $_SESSION['role'] != 'admin') {
-        //     header('Location: /login');
-        //     exit;
-        // }
-        require __DIR__ . '/views/admin/dashboard.php';
-        break;
+   
     default:
         // Handle regex-based routes
         if (preg_match('/^\/admin\/products\/(\d+)\/edit$/', $uri, $matches)) {

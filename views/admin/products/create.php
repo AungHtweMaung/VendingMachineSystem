@@ -26,10 +26,6 @@
 
         <!-- Sidebar Links -->
         <div class="sidebar-links">
-            <a href="/admin/dashboard" class="sidebar-link">
-                <i class="bi bi-house-door"></i>
-                <span>Dashboard</span>
-            </a>
             <a href="/admin/products" class="sidebar-link active">
                 <i class="bi bi-box-seam"></i>
                 <span>Products</span>
@@ -60,7 +56,6 @@
                 <!-- Breadcrumb -->
                 <nav aria-label="breadcrumb" class="d-none d-md-flex">
                     <ol class="breadcrumb mb-0">
-                        <li class="breadcrumb-item"><a href="/admin/dashboard">Dashboard</a></li>
                         <li class="breadcrumb-item"><a href="/admin/products">Products</a></li>
                         <li class="breadcrumb-item active" aria-current="page">Add New</li>
                     </ol>
@@ -116,15 +111,16 @@
                             <h6 class="mb-0"><i class="bi bi-plus-circle me-2"></i>Product Information</h6>
                         </div>
                         <div class="card-body">
-                            <form action="/admin/products" method="POST">
+                            <form action="/admin/products" method="POST" enctype="multipart/form-data">
                                 <div class="row">
                                     <div class="col-md-6 mb-3">
                                         <label for="name" class="form-label">
                                             <i class="bi bi-tag me-1"></i>Product Name <span class="text-danger">*</span>
                                         </label>
                                         <input type="text" class="form-control" id="name" name="name" required
-                                               placeholder="Enter product name">
-                                        <div class="form-text">Enter a descriptive name for the product</div>
+                                               placeholder="Enter product name" value="<?php echo htmlspecialchars($_POST['name'] ?? ''); ?>">
+                                        <span class="text-danger"><?php echo isset($errors['name']) ? htmlspecialchars($errors['name']) : ''; ?></span>
+                                       
                                     </div>
                                     <div class="col-md-6 mb-3">
                                         <label for="price" class="form-label">
@@ -133,8 +129,9 @@
                                         <div class="input-group">
                                             <span class="input-group-text">$</span>
                                             <input type="number" step="0.01" min="0" class="form-control" id="price" name="price" required
-                                                   placeholder="0.00">
+                                                   placeholder="0.00" value="<?php echo htmlspecialchars($_POST['price'] ?? ''); ?>">
                                         </div>
+                                        <span class="text-danger"><?php echo isset($errors['price']) ? htmlspecialchars($errors['price']) : ''; ?></span>
                                         <div class="form-text">Enter the price in dollars</div>
                                     </div>
                                 </div>
@@ -145,7 +142,6 @@
                                     </label>
                                     <textarea class="form-control" id="description" name="description" rows="4"
                                               placeholder="Enter product description"></textarea>
-                                    <div class="form-text">Provide a detailed description of the product</div>
                                 </div>
 
                                 <div class="row">
@@ -153,10 +149,20 @@
                                         <label for="quantity" class="form-label">
                                             <i class="bi bi-boxes me-1"></i>Quantity <span class="text-danger">*</span>
                                         </label>
-                                        <input type="number" min="0" class="form-control" id="quantity" name="quantity" required
-                                               placeholder="0">
+                                        <input type="number" min="1" class="form-control" id="quantity" name="quantity" required
+                                               placeholder="1" value="<?php echo htmlspecialchars($_POST['quantity'] ?? ''); ?>">
+                                        <span class="text-danger"><?php echo isset($errors['quantity']) ? htmlspecialchars($errors['quantity']) : ''; ?></span>
                                         <div class="form-text">Enter the initial stock quantity</div>
                                     </div>
+                                </div>
+
+                                <div class="mb-3">
+                                    <label for="image" class="form-label">
+                                        <i class="bi bi-image me-1"></i>Product Image
+                                    </label>
+                                    <input type="file" class="form-control" id="image" name="image" accept="image/*">
+                                    <span class="text-danger"><?php echo isset($errors['image']) ? htmlspecialchars($errors['image']) : ''; ?></span>
+                                    <div class="form-text">Upload an image for the product. Supported formats: JPEG, PNG, WebP. Max size: 5MB.</div>
                                 </div>
 
                                 <div class="d-flex gap-2 pt-3 border-top">
