@@ -1,8 +1,25 @@
+Database Design for a Vending Machine System (PHP & MySQL)
 
+This vending machine application requires a structured relational database to manage users, products, and transactions efficiently. The database is designed using MySQL and follows normalization principles to ensure data integrity, scalability, and ease of maintenance.
 
+---
+
+1. Database Creation
+
+The database is created to store all application data related to users, products, and transactions.
+
+```sql
 CREATE DATABASE vending_machine_system;
+USE vending_machine_system;
+```
 
+---
 
+2. Users Table
+
+The **users** table stores authentication and authorization information. Each user can either be an administrator or a normal customer.
+
+```
 CREATE TABLE users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -12,9 +29,23 @@ CREATE TABLE users (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+```
 
+**Explanation:**
 
+* `id` uniquely identifies each user
+* `email` is unique to prevent duplicate accounts
+* `password` stores a hashed password
+* `role` controls access (only admins can manage products)
+* Timestamps track record creation and updates
 
+---
+
+3. Products Table
+
+The **products** table stores vending machine items and inventory information.
+
+```
 CREATE TABLE products (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -25,31 +56,43 @@ CREATE TABLE products (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
+```
 
+**Explanation:**
+
+* `image` stores the image file path, not the actual image
+* `price` uses DECIMAL for accurate monetary calculations
+* `quantity` tracks stock availability
+
+---
+
+4.Transactions Table
+
+The **transactions** table stores overall purchase information made by users.
+
+```
 CREATE TABLE transactions (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
-    product_id INT,
-    price DECIMAL(10,2) NOT NULL,
-    quantity INT NOT NULL,
     total_amount DECIMAL(10,3) NOT NULL,
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
+```
 
-CREATE TABLE transaction_items (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    transaction_id INT NOT NULL,
-    product_id INT NOT NULL,
-    quantity INT NOT NULL,
-    price DECIMAL(10,2) NOT NULL,
-    total_price DECIMAL(10,2) NOT NULL,
-    created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (transaction_id) REFERENCES transactions(id) ON DELETE CASCADE,
-    FOREIGN KEY (product_id) REFERENCES products(id)
-);
+**Explanation:**
+
+* Each transaction belongs to one user
+* `total_amount` stores the total cost of the transaction
+* Foreign key ensures a transaction cannot exist without a user
+
+---
 
 
+
+### 6. Relationships Summary
+
+* One **user** can have many **transactions**
+* One **product** can appear in many **transaction items**
 
 
